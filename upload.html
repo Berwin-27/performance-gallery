@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Publish · Berwin Art Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3ece2; --ink:#2b2622; --muted:#7a6f63; --line:#d8ccbb;
+    --gold:#9c7b4d; --frame:#fbf7f0; --ok:#3f7d52; --err:#a8453a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Jost',system-ui,sans-serif; font-weight:300; line-height:1.6;
+    min-height:100vh; padding:5vh 20px;
+  }
+  .wrap{ max-width:680px; margin:0 auto; }
+  .eyebrow{ text-transform:uppercase; letter-spacing:.38em; font-size:.7rem; color:var(--gold); margin:0 0 .8rem; }
+  h1{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:clamp(2rem,6vw,3rem); margin:0 0 .3rem; }
+  .sub{ color:var(--muted); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.2rem; margin:0 0 2.4rem; }
+  .card{ background:var(--frame); border:1px solid var(--line); padding:1.6rem 1.8rem; margin-bottom:1.4rem; box-shadow:0 8px 26px -14px rgba(60,45,30,.18); }
+  .card h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.4rem; margin:0 0 .2rem; }
+  .card h2 .step{ color:var(--gold); margin-right:.5rem; }
+  .card p.hint{ color:var(--muted); font-size:.92rem; margin:.2rem 0 1rem; }
+  input[type=password], input[type=text]{
+    width:100%; padding:.7rem .8rem; border:1px solid var(--line); background:#fff;
+    font-family:'Jost',sans-serif; font-size:.95rem; border-radius:6px; color:var(--ink);
+  }
+  .row{ display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+  button{
+    font-family:'Jost',sans-serif; font-weight:400; letter-spacing:.04em;
+    border:1px solid var(--gold); background:var(--gold); color:#fff;
+    padding:.7rem 1.4rem; border-radius:6px; cursor:pointer; font-size:.92rem;
+    transition:opacity .2s, transform .15s;
+  }
+  button:hover{ opacity:.9; } button:active{ transform:translateY(1px); }
+  button.ghost{ background:transparent; color:var(--gold); }
+  button:disabled{ opacity:.4; cursor:not-allowed; }
+  .tokstate{ font-size:.85rem; margin-top:.6rem; }
+  .tokstate.ok{ color:var(--ok); } .tokstate.err{ color:var(--err); }
+  details{ margin-top:.8rem; font-size:.88rem; }
+  details summary{ cursor:pointer; color:var(--gold); }
+  details ol{ margin:.6rem 0 0; padding-left:1.2rem; color:var(--muted); }
+  details code{ background:var(--bg); padding:.1em .4em; border-radius:4px; font-family:ui-monospace,monospace; font-size:.82rem; color:var(--ink); }
+
+  #drop{
+    border:2px dashed var(--line); border-radius:10px; background:#fff;
+    padding:3rem 1.5rem; text-align:center; cursor:pointer; transition:.2s;
+  }
+  #drop.hot{ border-color:var(--gold); background:#fffdf8; }
+  #drop .big{ font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--ink); }
+  #drop .small{ color:var(--muted); font-size:.9rem; margin-top:.4rem; }
+  #picked{ margin-top:1rem; font-size:.92rem; color:var(--ink); }
+  #thumbs{ display:flex; flex-wrap:wrap; gap:6px; margin-top:1rem; }
+  #thumbs img{ width:64px; height:64px; object-fit:cover; border-radius:4px; border:1px solid var(--line); }
+  #thumbs .more{ width:64px; height:64px; display:flex; align-items:center; justify-content:center;
+    background:var(--bg); border:1px solid var(--line); border-radius:4px; color:var(--muted); font-size:.8rem; }
+
+  .barwrap{ height:8px; background:var(--bg); border-radius:99px; overflow:hidden; margin:1rem 0 .6rem; display:none; }
+  .bar{ height:100%; width:0; background:var(--gold); transition:width .2s; }
+  #log{ font-size:.9rem; color:var(--muted); min-height:1.4em; }
+  #log.ok{ color:var(--ok); } #log.err{ color:var(--err); white-space:pre-wrap; }
+  .gallink{ display:inline-block; margin-top:.4rem; color:var(--gold); }
+  .pub{ width:100%; padding:.95rem; font-size:1.05rem; margin-top:.4rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Private · for Berwin only</p>
+  <h1>Publish to the Gallery</h1>
+  <p class="sub">Drag your folder of photos in, then press Publish. The live gallery updates on its own.</p>
+
+  <!-- STEP 1: KEY -->
+  <div class="card">
+    <h2><span class="step">1</span>Your publishing key</h2>
+    <p class="hint">Paste this once — it's saved in this browser only, never shared. You won't need to do this again on this computer.</p>
+    <div class="row">
+      <input type="password" id="token" placeholder="ghp_… or github_pat_…" autocomplete="off" style="flex:1;min-width:220px;">
+      <button id="saveTok">Save</button>
+      <button class="ghost" id="clearTok">Forget</button>
+    </div>
+    <div class="tokstate" id="tokstate"></div>
+    <details>
+      <summary>How do I get a key? (one-time, ~2 min)</summary>
+      <ol>
+        <li>Go to <code>github.com/settings/tokens?type=beta</code> (Fine-grained tokens).</li>
+        <li>Click <strong>Generate new token</strong>. Name it anything (e.g. "gallery").</li>
+        <li>Under <strong>Repository access</strong> → <em>Only select repositories</em> → choose <code>performance-gallery</code>.</li>
+        <li>Under <strong>Permissions</strong> → <em>Repository permissions</em> → set <code>Contents</code> to <strong>Read and write</strong>.</li>
+        <li>Click <strong>Generate token</strong>, copy it, and paste it above. Press Save.</li>
+      </ol>
+    </details>
+  </div>
+
+  <!-- STEP 2: DROP -->
+  <div class="card">
+    <h2><span class="step">2</span>Add your photos</h2>
+    <p class="hint">Drag a folder straight from File Explorer, or click to choose one.</p>
+    <div id="drop">
+      <div class="big">Drop your folder here</div>
+      <div class="small">…or click to browse</div>
+    </div>
+    <input type="file" id="fileInput" webkitdirectory multiple hidden>
+    <div id="picked"></div>
+    <div id="thumbs"></div>
+  </div>
+
+  <!-- STEP 3: PUBLISH -->
+  <div class="card">
+    <h2><span class="step">3</span>Publish</h2>
+    <button class="pub" id="publish" disabled>Publish to gallery</button>
+    <div class="barwrap" id="barwrap"><div class="bar" id="bar"></div></div>
+    <div id="log"></div>
+    <a class="gallink" id="viewlink" href="./index.html" target="_blank">View the live gallery ↗</a>
+  </div>
+</div>
+
+<script>
+const OWNER = "Berwin-27";
+const REPO  = "performance-gallery";
+const BRANCH = "main";
+const PHOTO_DIR = "photos";
+const EXT = ["jpg","jpeg","png","webp","avif","gif"];
+const collator = new Intl.Collator(undefined,{numeric:true,sensitivity:"base"});
+
+let token = localStorage.getItem("gallery_token") || "";
+let files = [];   // {name, file}
+
+const $ = id => document.getElementById(id);
+
+/* ---------- token ---------- */
+function paintTok(){
+  const el = $("tokstate");
+  if(token){ el.textContent = "✓ Key saved on this computer."; el.className="tokstate ok"; $("token").value = ""; $("token").placeholder = "•••••• (saved)"; }
+  else { el.textContent = "No key saved yet."; el.className="tokstate"; }
+  refreshPublishBtn();
+}
+$("saveTok").onclick = () => {
+  const v = $("token").value.trim();
+  if(!v){ return; }
+  token = v; localStorage.setItem("gallery_token", v); paintTok();
+};
+$("clearTok").onclick = () => { token=""; localStorage.removeItem("gallery_token"); paintTok(); };
+paintTok();
+
+/* ---------- file gathering ---------- */
+const isImg = name => EXT.includes(name.slice(name.lastIndexOf(".")+1).toLowerCase());
+
+function readEntry(entry, out){
+  return new Promise(resolve=>{
+    if(entry.isFile){ entry.file(f=>{ if(isImg(f.name)) out.push(f); resolve(); }, ()=>resolve()); }
+    else if(entry.isDirectory){
+      const reader = entry.createReader(); const all=[];
+      const batch = () => reader.readEntries(async ents=>{
+        if(!ents.length){ for(const e of all) await readEntry(e,out); resolve(); }
+        else { all.push(...ents); batch(); }
+      }, ()=>resolve());
+      batch();
+    } else resolve();
+  });
+}
+
+function setFiles(list){
+  // de-dupe by basename, natural sort
+  const map = new Map();
+  for(const f of list){ map.set(f.name, f); }
+  files = [...map.values()].sort((a,b)=>collator.compare(a.name,b.name));
+  renderPicked();
+}
+
+function renderPicked(){
+  $("picked").textContent = files.length ? `${files.length} photo${files.length>1?"s":""} ready to publish.` : "";
+  const t = $("thumbs"); t.innerHTML = "";
+  files.slice(0,12).forEach(f=>{
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(f); img.onload = ()=>URL.revokeObjectURL(img.src);
+    t.appendChild(img);
+  });
+  if(files.length>12){ const d=document.createElement("div"); d.className="more"; d.textContent=`+${files.length-12}`; t.appendChild(d); }
+  refreshPublishBtn();
+}
+
+/* drop zone */
+const drop = $("drop");
+drop.onclick = () => $("fileInput").click();
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("hot"); };
+drop.ondragleave = () => drop.classList.remove("hot");
+drop.ondrop = async e => {
+  e.preventDefault(); drop.classList.remove("hot");
+  const entries = [...e.dataTransfer.items].map(i=>i.webkitGetAsEntry&&i.webkitGetAsEntry()).filter(Boolean);
+  if(entries.length){
+    const out=[]; for(const en of entries) await readEntry(en,out); setFiles(out);
+  } else {
+    setFiles([...e.dataTransfer.files].filter(f=>isImg(f.name)));
+  }
+};
+$("fileInput").onchange = e => setFiles([...e.target.files].filter(f=>isImg(f.name)));
+
+/* ---------- publish ---------- */
+function refreshPublishBtn(){ $("publish").disabled = !(token && files.length); }
+
+function bufToB64(buf){
+  const bytes = new Uint8Array(buf); let bin=""; const chunk=0x8000;
+  for(let i=0;i<bytes.length;i+=chunk) bin += String.fromCharCode.apply(null, bytes.subarray(i,i+chunk));
+  return btoa(bin);
+}
+const readAsBuf = file => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsArrayBuffer(file); });
+
+async function gh(path, opts={}){
+  const res = await fetch(`https://api.github.com${path}`, {
+    ...opts,
+    headers:{ "Authorization":`Bearer ${token}`, "Accept":"application/vnd.github+json", "X-GitHub-Api-Version":"2022-11-28", ...(opts.headers||{}) }
+  });
+  if(!res.ok){ throw new Error(`${res.status} ${res.statusText} — ${(await res.text()).slice(0,300)}`); }
+  return res.json();
+}
+
+function log(msg, cls=""){ const l=$("log"); l.textContent=msg; l.className=cls; }
+function prog(p){ $("bar").style.width = Math.round(p*100)+"%"; }
+
+$("publish").onclick = async () => {
+  if(!token || !files.length) return;
+  $("publish").disabled = true; $("barwrap").style.display="block"; prog(0);
+  try{
+    log("Connecting to your gallery…");
+    const ref = await gh(`/repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}`);
+    const baseCommit = ref.object.sha;
+    const commitObj = await gh(`/repos/${OWNER}/${REPO}/git/commits/${baseCommit}`);
+    const baseTree = commitObj.tree.sha;
+
+    // existing photos in repo
+    const tree = await gh(`/repos/${OWNER}/${REPO}/git/trees/${baseTree}?recursive=1`);
+    const existing = new Set(
+      (tree.tree||[])
+        .filter(t=>t.type==="blob" && t.path.startsWith(PHOTO_DIR+"/") && isImg(t.path))
+        .map(t=>t.path.slice(PHOTO_DIR.length+1))
+    );
+
+    // upload each new file as a blob
+    const treeItems = [];
+    for(let i=0;i<files.length;i++){
+      const f = files[i];
+      log(`Uploading ${i+1} of ${files.length} — ${f.name}`);
+      const b64 = bufToB64(await readAsBuf(f));
+      const blob = await gh(`/repos/${OWNER}/${REPO}/git/blobs`, {
+        method:"POST", body:JSON.stringify({ content:b64, encoding:"base64" })
+      });
+      treeItems.push({ path:`${PHOTO_DIR}/${f.name}`, mode:"100644", type:"blob", sha:blob.sha });
+      existing.add(f.name);
+      prog((i+1)/files.length * 0.85);
+    }
+
+    // rebuild photos.js from full set
+    log("Updating the gallery layout…");
+    const allNames = [...existing].sort(collator.compare);
+    const photos = allNames.map(n=>({ src:`${PHOTO_DIR}/${n.split("/").map(encodeURIComponent).join("/")}`, title:"" }));
+    const js = `// AUTO-GENERATED by upload.html — ${photos.length} photo(s).\nwindow.PHOTOS = ${JSON.stringify(photos,null,2)};\n`;
+    const jsBlob = await gh(`/repos/${OWNER}/${REPO}/git/blobs`, {
+      method:"POST", body:JSON.stringify({ content:js, encoding:"utf-8" })
+    });
+    treeItems.push({ path:"photos.js", mode:"100644", type:"blob", sha:jsBlob.sha });
+    prog(0.9);
+
+    // new tree → commit → move branch
+    const newTree = await gh(`/repos/${OWNER}/${REPO}/git/trees`, {
+      method:"POST", body:JSON.stringify({ base_tree:baseTree, tree:treeItems })
+    });
+    const newCommit = await gh(`/repos/${OWNER}/${REPO}/git/commits`, {
+      method:"POST", body:JSON.stringify({ message:`Add ${files.length} photo(s) via upload page`, tree:newTree.sha, parents:[baseCommit] })
+    });
+    await gh(`/repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}`, {
+      method:"PATCH", body:JSON.stringify({ sha:newCommit.sha })
+    });
+    prog(1);
+
+    log(`✓ Published ${files.length} photo(s)! ${photos.length} total in the gallery. It goes live in about a minute.`, "ok");
+    files = []; renderPicked();
+  }catch(err){
+    log("Something went wrong:\n" + err.message + "\n\nCheck that your key is correct and has Contents: Read & write on the performance-gallery repo.", "err");
+  }finally{
+    $("publish").disabled = !(token && files.length);
+  }
+};
+</script>
+</body>
+</html>
