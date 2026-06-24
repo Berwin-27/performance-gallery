@@ -5,7 +5,18 @@
 // This script merges it in, so rebuilding never erases your captions.
 
 import { readdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
+
+// recursively collect image files under a directory
+function walk(dir){
+  let out = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) out = out.concat(walk(full));
+    else if (EXT.has(entry.name.slice(entry.name.lastIndexOf('.')).toLowerCase())) out.push(full);
+  }
+  return out;
+}
 
 const PHOTO_DIR = 'photos';
 const EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif']);
@@ -24,13 +35,15 @@ if (!existsSync(PHOTO_DIR)) {
   process.exit(1);
 }
 
-const files = readdirSync(PHOTO_DIR)
-  .filter(f => EXT.has(f.slice(f.lastIndexOf('.')).toLowerCase()))
+// relative paths under photos/, using forward slashes, naturally sorted
+const files = walk(PHOTO_DIR)
+  .map(f => relative(PHOTO_DIR, f).split(sep).join('/'))
   .sort(collator.compare);
 
 const photos = files.map(f => {
   const caption = captions[f] ?? '';
-  return { src: `${PHOTO_DIR}/${encodeURIComponent(f)}`, title: caption };
+  const url = f.split('/').map(encodeURIComponent).join('/');
+  return { src: `${PHOTO_DIR}/${url}`, title: caption };
 });
 
 const out =
