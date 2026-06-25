@@ -219,6 +219,41 @@
     .lb-btn{ width:46px; height:46px; }
     #lb img{ max-height:74vh; }
   }
+
+  /* ---------- HEARTS ---------- */
+  .like{
+    position:absolute; top:20px; right:20px; z-index:2;
+    display:inline-flex; align-items:center; gap:.4em;
+    background:rgba(251,247,240,.86); backdrop-filter:blur(4px);
+    border:1px solid var(--line); border-radius:99px;
+    padding:.32em .72em; cursor:pointer;
+    font-family:'Jost',sans-serif; font-size:.8rem; color:var(--ink); line-height:1;
+    transition:transform .15s, background .2s; user-select:none;
+  }
+  .like:hover{ background:#fff; }
+  .like:active{ transform:scale(.9); }
+  .like .ic{ font-size:1rem; filter:grayscale(1) opacity(.6); transition:filter .2s, transform .2s; }
+  .like.on .ic{ filter:none; transform:scale(1.15); color:#c0392b; }
+  @keyframes floatheart{ 0%{opacity:1; transform:translateY(0) scale(1);} 100%{opacity:0; transform:translateY(-46px) scale(1.7);} }
+  .fh{ pointer-events:none; color:#c0392b; font-size:1.5rem; animation:floatheart .9s ease-out forwards; z-index:60; }
+
+  /* ---------- GUESTBOOK ---------- */
+  #guestbook{ position:relative; z-index:1; max-width:720px; margin:8vh auto 0; padding:0 5vw; }
+  #guestbook h2{ font-family:'Cormorant Garamond',serif; font-weight:500; text-align:center; font-size:clamp(1.9rem,4.5vw,2.8rem); margin:0 0 .2rem; }
+  #guestbook .gb-sub{ text-align:center; color:var(--muted); font-family:'Cormorant Garamond',serif; font-style:italic; margin:0 0 2rem; font-size:1.1rem; }
+  .gb-form{ background:var(--frame); border:1px solid var(--line); padding:1.4rem; box-shadow:0 8px 26px -14px var(--shadow); margin-bottom:2.4rem; }
+  .gb-form input, .gb-form textarea{ width:100%; padding:.7rem .8rem; margin-bottom:.7rem; border:1px solid var(--line); background:#fff; font-family:'Jost',sans-serif; font-size:.95rem; border-radius:6px; color:var(--ink); resize:vertical; }
+  .gb-form textarea{ min-height:84px; }
+  .gb-form button{ font-family:'Jost',sans-serif; letter-spacing:.03em; border:1px solid var(--gold); background:var(--gold); color:#fff; padding:.62rem 1.4rem; border-radius:6px; cursor:pointer; font-size:.92rem; transition:opacity .2s; }
+  .gb-form button:hover{ opacity:.9; } .gb-form button:disabled{ opacity:.5; cursor:not-allowed; }
+  .gb-entry{ border-bottom:1px solid var(--line); padding:1.1rem .2rem; }
+  .gb-entry .who{ font-family:'Cormorant Garamond',serif; font-weight:600; font-size:1.2rem; }
+  .gb-entry .when{ color:var(--muted); font-size:.76rem; margin-left:.6rem; letter-spacing:.04em; }
+  .gb-entry .msg{ margin:.35rem 0 0; }
+  .gb-empty{ text-align:center; color:var(--muted); font-style:italic; font-family:'Cormorant Garamond',serif; padding:1rem 0; }
+
+  /* ---------- VIEW COUNTER ---------- */
+  .viewcount{ font-family:'Jost',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:.68rem; color:var(--muted); margin:0 0 1.3rem; }
 </style>
 </head>
 <body>
@@ -238,8 +273,20 @@
     </div>
   </main>
 
+  <section id="guestbook" hidden>
+    <h2>Guestbook</h2>
+    <p class="gb-sub">Leave a note for Berwin and the dancers.</p>
+    <form class="gb-form" id="gb-form">
+      <input id="gb-name" maxlength="80" placeholder="Your name" autocomplete="name" required>
+      <textarea id="gb-msg" maxlength="1000" placeholder="Your message…" required></textarea>
+      <button type="submit" id="gb-send">Sign the guestbook</button>
+    </form>
+    <div id="gb-list"></div>
+  </section>
+
   <footer>
     <div class="mark"></div>
+    <p class="viewcount" id="viewcount" hidden></p>
     <p id="c-footer"></p>
   </footer>
 
@@ -256,6 +303,8 @@
 
   <!-- generated list of photos -->
   <script src="photos.js"></script>
+  <!-- firebase config (interactions stay off until this is set) -->
+  <script src="config.js"></script>
 
   <script>
   (function(){
@@ -359,6 +408,101 @@
       if(Math.abs(dx)>50) show(dx<0 ? cur+1 : cur-1);
     }, {passive:true});
   })();
+  </script>
+
+  <!-- ===================== LIVE INTERACTIONS (Firebase) ===================== -->
+  <script type="module">
+  const cfg = window.FIREBASE_CONFIG;
+  const ready = cfg && typeof cfg === 'object' && cfg.apiKey && cfg.projectId;
+  if (ready) {
+    const [{ initializeApp }, fs] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js")
+    ]);
+    const { getFirestore, doc, setDoc, addDoc, collection, onSnapshot, query, orderBy, serverTimestamp, increment } = fs;
+    const db = getFirestore(initializeApp(cfg));
+
+    const photos = window.PHOTOS || [];
+    const idOf = src => src.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 120);
+
+    /* ---------- HEARTS ---------- */
+    const countEls = {};
+    document.querySelectorAll('figure.shot').forEach((fig, i) => {
+      if (!photos[i]) return;
+      const id = idOf(photos[i].src);
+      const btn = document.createElement('button');
+      btn.className = 'like'; btn.type = 'button'; btn.setAttribute('aria-label', 'Love this photo');
+      btn.innerHTML = '<span class="ic">❤</span><span class="n">0</span>';
+      if (localStorage.getItem('like_' + id) === '1') btn.classList.add('on');
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const on = btn.classList.toggle('on');
+        if (on) { localStorage.setItem('like_' + id, '1'); floatHeart(btn); }
+        else localStorage.removeItem('like_' + id);
+        try { await setDoc(doc(db, 'likes', id), { count: increment(on ? 1 : -1) }, { merge: true }); }
+        catch (err) { btn.classList.toggle('on'); }
+      });
+      fig.appendChild(btn);
+      countEls[id] = btn.querySelector('.n');
+    });
+    onSnapshot(collection(db, 'likes'), snap => {
+      snap.forEach(d => { const el = countEls[d.id]; if (el) el.textContent = d.data().count || 0; });
+    });
+    function floatHeart(btn) {
+      const r = btn.getBoundingClientRect();
+      const fh = document.createElement('span');
+      fh.className = 'fh'; fh.textContent = '❤';
+      fh.style.cssText = `position:fixed; left:${r.left + r.width / 2 - 10}px; top:${r.top}px;`;
+      document.body.appendChild(fh); setTimeout(() => fh.remove(), 900);
+    }
+
+    /* ---------- VIEW COUNTER ---------- */
+    const vc = document.getElementById('viewcount');
+    try {
+      if (!sessionStorage.getItem('counted')) {
+        sessionStorage.setItem('counted', '1');
+        await setDoc(doc(db, 'stats', 'views'), { count: increment(1) }, { merge: true });
+      }
+    } catch (e) {}
+    onSnapshot(doc(db, 'stats', 'views'), d => {
+      const n = d.data() && d.data().count;
+      if (n) { vc.hidden = false; vc.textContent = `Seen by ${n} visitor${n === 1 ? '' : 's'}`; }
+    });
+
+    /* ---------- GUESTBOOK ---------- */
+    document.getElementById('guestbook').hidden = false;
+    const form = document.getElementById('gb-form');
+    const listEl = document.getElementById('gb-list');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('gb-name').value.trim().slice(0, 80);
+      const msg = document.getElementById('gb-msg').value.trim().slice(0, 1000);
+      if (!name || !msg) return;
+      const btn = document.getElementById('gb-send');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        await addDoc(collection(db, 'guestbook'), { name, message: msg, ts: serverTimestamp() });
+        document.getElementById('gb-msg').value = '';
+        btn.textContent = 'Thank you!';
+        setTimeout(() => { btn.textContent = 'Sign the guestbook'; btn.disabled = false; }, 1600);
+      } catch (err) { btn.textContent = 'Try again'; btn.disabled = false; }
+    });
+    onSnapshot(query(collection(db, 'guestbook'), orderBy('ts', 'desc')), snap => {
+      if (snap.empty) { listEl.innerHTML = '<p class="gb-empty">Be the first to leave a note.</p>'; return; }
+      listEl.innerHTML = '';
+      snap.forEach(d => {
+        const e = d.data();
+        const entry = document.createElement('div'); entry.className = 'gb-entry';
+        const head = document.createElement('div');
+        const who = document.createElement('span'); who.className = 'who'; who.textContent = e.name || 'Anonymous';
+        const when = document.createElement('span'); when.className = 'when';
+        when.textContent = e.ts && e.ts.toDate ? e.ts.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+        head.appendChild(who); head.appendChild(when);
+        const m = document.createElement('p'); m.className = 'msg'; m.textContent = e.message || '';
+        entry.appendChild(head); entry.appendChild(m); listEl.appendChild(entry);
+      });
+    });
+  }
   </script>
 </body>
 </html>
