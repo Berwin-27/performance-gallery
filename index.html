@@ -118,10 +118,13 @@
     transform:translateY(-4px);
     box-shadow:0 20px 40px -16px var(--shadow);
   }
+  figure.shot .imgwrap{ overflow:hidden; }
   figure.shot img{
     display:block; width:100%; height:auto;
     background:var(--bg-soft);
+    transition:transform .8s cubic-bezier(.2,.8,.2,1);
   }
+  figure.shot:hover img{ transform:scale(1.05); }
   figure.shot figcaption{
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
@@ -178,6 +181,8 @@
     user-select:none;
     transition:opacity .25s ease;
   }
+  #lb img.kb{ animation:kbzoom 16s ease-out forwards; }
+  @keyframes kbzoom{ from{ transform:scale(1); } to{ transform:scale(1.07); } }
   #lb .cap{
     position:absolute; bottom:4vh; left:0; right:0;
     text-align:center; color:#e9ddc9;
@@ -205,6 +210,10 @@
   #lb-close{
     top:3vh; right:max(2vw,14px); transform:none;
     width:48px; height:48px; font-size:1.3rem;
+  }
+  #lb-play{
+    top:3vh; left:max(2vw,14px); transform:none;
+    width:48px; height:48px; font-size:1rem;
   }
   @media(max-width:600px){
     .lb-btn{ width:46px; height:46px; }
@@ -237,6 +246,7 @@
   <!-- LIGHTBOX -->
   <div id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
     <div class="count" id="lb-count"></div>
+    <button class="lb-btn" id="lb-play" aria-label="Play slideshow">&#9658;</button>
     <button class="lb-btn" id="lb-prev" aria-label="Previous">&#8249;</button>
     <img id="lb-img" alt="" />
     <button class="lb-btn" id="lb-next" aria-label="Next">&#8250;</button>
@@ -270,12 +280,15 @@
       fig.className = 'shot';
       fig.dataset.index = i;
 
+      const wrap = document.createElement('div');
+      wrap.className = 'imgwrap';
       const img = document.createElement('img');
       img.src = p.src;
       img.alt = p.title || ('Photo ' + (i+1));
       img.loading = 'lazy';
       img.decoding = 'async';
-      fig.appendChild(img);
+      wrap.appendChild(img);
+      fig.appendChild(wrap);
 
       if(p.title){
         const cap = document.createElement('figcaption');
@@ -299,21 +312,32 @@
     const lbCount= document.getElementById('lb-count');
     let cur = 0;
 
+    const playBtn = document.getElementById('lb-play');
+    let timer = null;
+
     function show(i){
       cur = (i + photos.length) % photos.length;
       const p = photos[cur];
       lbImg.style.opacity = 0;
       const next = new Image();
-      next.onload = () => { lbImg.src = p.src; lbImg.style.opacity = 1; };
+      next.onload = () => {
+        lbImg.src = p.src; lbImg.style.opacity = 1;
+        lbImg.classList.remove('kb'); void lbImg.offsetWidth; lbImg.classList.add('kb'); // restart drift
+      };
       next.src = p.src;
       lbCap.textContent = p.title || '';
       lbCount.textContent = (cur+1) + ' / ' + photos.length;
       // preload neighbours
       [cur+1, cur-1].forEach(n=>{ const q=photos[(n+photos.length)%photos.length]; if(q){ new Image().src=q.src; }});
     }
+    function setPlay(on){
+      if(on){ playBtn.innerHTML='&#10074;&#10074;'; playBtn.setAttribute('aria-label','Pause slideshow'); timer=setInterval(()=>show(cur+1), 4500); }
+      else { playBtn.innerHTML='&#9658;'; playBtn.setAttribute('aria-label','Play slideshow'); clearInterval(timer); timer=null; }
+    }
     function openLB(i){ show(i); lb.classList.add('open'); document.body.style.overflow='hidden'; }
-    function closeLB(){ lb.classList.remove('open'); document.body.style.overflow=''; }
+    function closeLB(){ setPlay(false); lb.classList.remove('open'); document.body.style.overflow=''; }
 
+    playBtn.addEventListener('click', e=>{ e.stopPropagation(); setPlay(!timer); });
     document.getElementById('lb-next').addEventListener('click', e=>{e.stopPropagation(); show(cur+1);});
     document.getElementById('lb-prev').addEventListener('click', e=>{e.stopPropagation(); show(cur-1);});
     document.getElementById('lb-close').addEventListener('click', closeLB);
@@ -324,6 +348,7 @@
       if(e.key==='Escape') closeLB();
       else if(e.key==='ArrowRight') show(cur+1);
       else if(e.key==='ArrowLeft') show(cur-1);
+      else if(e.key===' '){ e.preventDefault(); setPlay(!timer); }
     });
 
     // swipe
