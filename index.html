@@ -3,24 +3,28 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="robots" content="noindex, nofollow" />
-<title>Berwin Art 2026 Dance Performance</title>
+<title>Berwin · Album</title>
+<meta name="description" content="Berwin Liu — a personal collection of photographs, projects, and moments, organized into albums." />
+<meta property="og:title" content="Berwin Liu · Album" />
+<meta property="og:description" content="Photographs, projects, and moments — kept in one place." />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#2b1f1a" />
 
 <!-- ============================================================
-     EDIT YOUR TITLE / TEXT HERE
+     EDIT YOUR SITE TEXT HERE
      ============================================================ -->
 <script>
-  window.GALLERY_CONFIG = {
-    title:    "Berwin Art 2026 Dance Performance",
-    subtitle: "Berwin Art · 2026",
-    intro:    "A collection of moments from the performance — captured, edited, and kept.",
-    footer:   "Photographed & edited by Berwin Liu."
+  window.SITE_CONFIG = {
+    name:     "Berwin Liu",
+    eyebrow:  "Photographs · Projects · Moments",
+    tagline:  "A personal collection — pictures I've taken and things I've made, kept in one place.",
+    footer:   "Made & photographed by Berwin Liu."
   };
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -45,68 +49,170 @@
     -webkit-font-smoothing:antialiased;
     line-height:1.6;
   }
+  img{ -webkit-user-drag:none; user-select:none; }
 
-  /* subtle paper texture */
-  body::before{
-    content:"";
-    position:fixed; inset:0; pointer-events:none; z-index:0;
-    background:
-      radial-gradient(circle at 20% 10%, rgba(255,255,255,.5), transparent 40%),
-      radial-gradient(circle at 80% 90%, rgba(160,130,90,.06), transparent 45%);
+  /* ============================================================
+     HERO  (cycling featured photos)
+     ============================================================ */
+  .hero{
+    position:relative;
+    height:100svh; min-height:520px;
+    overflow:hidden;
+    display:flex; align-items:flex-end;
+    background:#1a1511;
   }
-
-  /* ---------- HERO ---------- */
-  header.hero{
-    position:relative; z-index:1;
-    text-align:center;
-    padding:14vh 24px 8vh;
-    max-width:760px; margin:0 auto;
+  .hero .layer{
+    position:absolute; inset:0;
+    background-size:cover; background-position:center;
+    opacity:0;
+    transition:opacity 1.6s ease;
+    will-change:opacity, transform;
+  }
+  .hero .layer.show{ opacity:1; animation:kenburns 9s ease-out forwards; }
+  @keyframes kenburns{ from{ transform:scale(1.04); } to{ transform:scale(1.14); } }
+  .hero .scrim{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(to top, rgba(20,16,12,.82) 0%, rgba(20,16,12,.30) 38%, rgba(20,16,12,.18) 70%, rgba(20,16,12,.40) 100%);
+  }
+  .hero .inner{
+    position:relative; z-index:2;
+    width:100%; max-width:1100px;
+    margin:0 auto; padding:0 6vw 9vh;
+    color:#f4ead8;
   }
   .hero .eyebrow{
-    font-family:'Jost', sans-serif;
-    text-transform:uppercase;
-    letter-spacing:.42em;
-    font-size:.72rem;
-    color:var(--gold);
-    margin:0 0 1.4rem;
-    padding-left:.42em;
+    text-transform:uppercase; letter-spacing:.42em;
+    font-size:.72rem; color:#d9c39b;
+    margin:0 0 1.1rem; padding-left:.42em;
   }
   .hero h1{
     font-family:'Cormorant Garamond', serif;
     font-weight:500;
-    font-size:clamp(2.8rem, 8vw, 5.4rem);
-    line-height:1.02;
-    margin:0;
+    font-size:clamp(3rem, 11vw, 7rem);
+    line-height:.98; margin:0;
     letter-spacing:.5px;
+    text-shadow:0 2px 30px rgba(0,0,0,.4);
   }
-  .hero .rule{
-    width:54px; height:1px; background:var(--gold);
-    margin:2rem auto 1.6rem;
-    opacity:.7;
-  }
-  .hero p.intro{
+  .hero p.tagline{
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
-    font-size:clamp(1.1rem, 2.4vw, 1.45rem);
-    color:var(--muted);
-    max-width:30em; margin:0 auto;
+    font-size:clamp(1.1rem, 2.4vw, 1.5rem);
+    color:#e7d8bf; max-width:34em;
+    margin:1.4rem 0 0;
+    text-shadow:0 1px 14px rgba(0,0,0,.4);
+  }
+  .scrollcue{
+    position:absolute; left:50%; bottom:3.2vh; z-index:2;
+    transform:translateX(-50%);
+    color:#e7d8bf; opacity:.8;
+    font-size:.66rem; letter-spacing:.32em; text-transform:uppercase;
+    display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    cursor:pointer; background:none; border:none; font-family:'Jost',sans-serif;
+    animation:bob 2.6s ease-in-out infinite;
+  }
+  .scrollcue .arr{ font-size:1rem; }
+  @keyframes bob{ 0%,100%{ transform:translateX(-50%) translateY(0); } 50%{ transform:translateX(-50%) translateY(6px); } }
+
+  /* hero variant with no photos yet */
+  .hero.bare{ background:radial-gradient(circle at 30% 20%, #2a2017, #15110d); align-items:center; }
+  .hero.bare .inner{ text-align:center; padding-bottom:0; }
+
+  /* ============================================================
+     ALBUMS  (home grid)
+     ============================================================ */
+  .section-head{
+    max-width:1180px; margin:0 auto; padding:9vh 6vw 0;
+    display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-family:'Cormorant Garamond', serif; font-weight:500;
+    font-size:clamp(1.8rem, 4vw, 2.6rem); margin:0; letter-spacing:.5px;
+  }
+  .section-head .meta{ color:var(--muted); font-size:.78rem; letter-spacing:.22em; text-transform:uppercase; }
+
+  #albums{
+    max-width:1180px; margin:0 auto; padding:3.2vh 6vw 2vh;
+    display:grid; gap:30px;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .album-card{
+    cursor:pointer; background:var(--frame);
+    border:1px solid var(--line);
+    box-shadow:0 10px 30px -16px var(--shadow);
+    transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;
+    opacity:0; transform:translateY(16px);
+  }
+  .album-card.in{ opacity:1; transform:none; }
+  .album-card:hover{ transform:translateY(-6px); box-shadow:0 26px 50px -22px var(--shadow); }
+  .album-card .cover{
+    position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--bg-soft);
+  }
+  .album-card .cover img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .album-card:hover .cover img{ transform:scale(1.07); }
+  .album-card .cover .count{
+    position:absolute; top:12px; right:12px;
+    background:rgba(20,16,12,.62); color:#f4ead8; backdrop-filter:blur(3px);
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
+    padding:.32em .7em; border-radius:99px;
+  }
+  .album-card .cover .empty-cover{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.1rem;
+  }
+  .album-card .body{ padding:1.1rem 1.2rem 1.3rem; }
+  .album-card .body h3{
+    font-family:'Cormorant Garamond', serif; font-weight:500;
+    font-size:1.45rem; margin:0; line-height:1.15; letter-spacing:.3px;
+  }
+  .album-card .body p{
+    color:var(--muted); font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:1rem; margin:.4rem 0 0;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
   }
 
-  /* ---------- GALLERY ---------- */
-  main{ position:relative; z-index:1; padding:2vh 5vw 8vh; }
-  #gallery{
-    column-gap:22px;
-    columns:1;
+  /* ============================================================
+     ALBUM VIEW
+     ============================================================ */
+  #view{ display:none; }
+  #view.active{ display:block; }
+  #home.hidden{ display:none; }
+
+  .view-head{
+    max-width:1180px; margin:0 auto; padding:7vh 6vw 1vh;
   }
+  .backlink{
+    display:inline-flex; align-items:center; gap:.5em;
+    background:none; border:none; cursor:pointer;
+    font-family:'Jost',sans-serif; color:var(--gold);
+    letter-spacing:.2em; text-transform:uppercase; font-size:.72rem;
+    padding:0; margin:0 0 2rem;
+  }
+  .backlink:hover{ color:var(--ink); }
+  .view-head h1{
+    font-family:'Cormorant Garamond',serif; font-weight:500;
+    font-size:clamp(2.2rem, 6vw, 4rem); margin:0; line-height:1.04; letter-spacing:.5px;
+  }
+  .view-head .rule{ width:54px; height:1px; background:var(--gold); opacity:.7; margin:1.6rem 0; }
+  .view-head p.desc{
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(1.05rem,2.2vw,1.35rem); color:var(--muted); max-width:38em; margin:0;
+  }
+  .view-head .vcount{
+    margin:1.4rem 0 0; color:var(--muted); font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+  }
+
+  #gallery{ max-width:1320px; margin:0 auto; padding:3vh 5vw 4vh; column-gap:22px; columns:1; }
   @media(min-width:560px){ #gallery{ columns:2; } }
   @media(min-width:920px){ #gallery{ columns:3; } }
-  @media(min-width:1400px){ #gallery{ columns:4; } }
+  @media(min-width:1500px){ #gallery{ columns:4; } }
 
   figure.shot{
-    break-inside:avoid;
-    margin:0 0 22px;
-    background:var(--frame);
-    padding:12px 12px 12px;
+    break-inside:avoid; margin:0 0 22px;
+    background:var(--frame); padding:12px;
     border:1px solid var(--line);
     box-shadow:0 8px 26px -12px var(--shadow);
     cursor:zoom-in;
@@ -114,179 +220,122 @@
     opacity:0; transform:translateY(14px);
   }
   figure.shot.in{ opacity:1; transform:none; }
-  figure.shot:hover{
-    transform:translateY(-4px);
-    box-shadow:0 20px 40px -16px var(--shadow);
-  }
+  figure.shot:hover{ transform:translateY(-4px); box-shadow:0 20px 40px -16px var(--shadow); }
   figure.shot .imgwrap{ overflow:hidden; }
   figure.shot img{
-    display:block; width:100%; height:auto;
-    background:var(--bg-soft);
+    display:block; width:100%; height:auto; background:var(--bg-soft);
     transition:transform .8s cubic-bezier(.2,.8,.2,1);
   }
   figure.shot:hover img{ transform:scale(1.05); }
   figure.shot figcaption{
-    font-family:'Cormorant Garamond', serif;
-    font-style:italic;
-    font-size:1.02rem;
-    color:var(--muted);
-    text-align:center;
-    padding:.7rem .4rem .2rem;
+    font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-size:1.02rem; color:var(--muted); text-align:center; padding:.7rem .4rem .2rem;
   }
 
   /* ---------- EMPTY STATE ---------- */
   .empty{
-    text-align:center; max-width:560px;
-    margin:6vh auto; padding:3rem 2rem;
-    border:1px dashed var(--line);
-    background:var(--frame);
-    font-family:'Cormorant Garamond', serif;
-    color:var(--muted);
+    text-align:center; max-width:600px; margin:8vh auto; padding:3rem 2rem;
+    border:1px dashed var(--line); background:var(--frame);
+    font-family:'Cormorant Garamond', serif; color:var(--muted);
   }
-  .empty h2{ font-weight:500; color:var(--ink); margin:0 0 1rem; font-size:1.6rem; }
+  .empty h2{ font-weight:500; color:var(--ink); margin:0 0 1rem; font-size:1.7rem; }
   .empty code{
-    font-family:ui-monospace, Menlo, monospace;
-    font-size:.85rem; background:var(--bg);
-    padding:.15em .45em; border-radius:4px; color:var(--ink);
+    font-family:ui-monospace, Menlo, monospace; font-size:.85rem;
+    background:var(--bg); padding:.15em .45em; border-radius:4px; color:var(--ink);
   }
   .empty ol{ text-align:left; display:inline-block; margin:1rem auto 0; }
 
   /* ---------- FOOTER ---------- */
   footer{
-    position:relative; z-index:1;
-    text-align:center; padding:6vh 24px 8vh;
-    border-top:1px solid var(--line);
-    margin-top:4vh;
+    text-align:center; padding:7vh 24px 8vh;
+    border-top:1px solid var(--line); margin-top:5vh;
   }
   footer .mark{ width:40px; height:1px; background:var(--gold); margin:0 auto 1.4rem; opacity:.6; }
-  footer p{
-    font-family:'Cormorant Garamond', serif;
-    font-style:italic; color:var(--muted); margin:0;
-    font-size:1.1rem;
-  }
+  footer p{ font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--muted); margin:0; font-size:1.1rem; }
 
   /* ---------- LIGHTBOX ---------- */
   #lb{
     position:fixed; inset:0; z-index:50;
     background:rgba(28,23,18,.94);
     display:none; align-items:center; justify-content:center;
-    opacity:0; transition:opacity .35s ease;
-    backdrop-filter:blur(4px);
+    opacity:0; transition:opacity .35s ease; backdrop-filter:blur(4px);
   }
   #lb.open{ display:flex; opacity:1; }
   #lb img{
     max-width:92vw; max-height:84vh;
     box-shadow:0 30px 80px -20px rgba(0,0,0,.7);
-    background:#000;
-    user-select:none;
-    transition:opacity .25s ease;
+    background:#000; transition:opacity .25s ease;
   }
   #lb img.kb{ animation:kbzoom 16s ease-out forwards; }
   @keyframes kbzoom{ from{ transform:scale(1); } to{ transform:scale(1.07); } }
   #lb .cap{
-    position:absolute; bottom:4vh; left:0; right:0;
-    text-align:center; color:#e9ddc9;
-    font-family:'Cormorant Garamond', serif; font-style:italic;
-    font-size:1.15rem; padding:0 1rem;
-    text-shadow:0 1px 8px rgba(0,0,0,.5);
+    position:absolute; bottom:4vh; left:0; right:0; text-align:center; color:#e9ddc9;
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1.15rem;
+    padding:0 1rem; text-shadow:0 1px 8px rgba(0,0,0,.5);
   }
   #lb .count{
-    position:absolute; top:4vh; left:0; right:0;
-    text-align:center; color:#bcae98;
-    font-family:'Jost',sans-serif; letter-spacing:.3em;
-    font-size:.72rem; text-transform:uppercase;
+    position:absolute; top:4vh; left:0; right:0; text-align:center; color:#bcae98;
+    font-family:'Jost',sans-serif; letter-spacing:.3em; font-size:.72rem; text-transform:uppercase;
   }
   .lb-btn{
     position:absolute; top:50%; transform:translateY(-50%);
     width:56px; height:56px; border:none; cursor:pointer;
-    background:rgba(255,255,255,.06); color:#f0e6d4;
-    font-size:1.6rem; border-radius:50%;
+    background:rgba(255,255,255,.06); color:#f0e6d4; font-size:1.6rem; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
     transition:background .25s; backdrop-filter:blur(2px);
   }
   .lb-btn:hover{ background:rgba(255,255,255,.16); }
   #lb-prev{ left:max(2vw,14px); }
   #lb-next{ right:max(2vw,14px); }
-  #lb-close{
-    top:3vh; right:max(2vw,14px); transform:none;
-    width:48px; height:48px; font-size:1.3rem;
-  }
-  #lb-play{
-    top:3vh; left:max(2vw,14px); transform:none;
-    width:48px; height:48px; font-size:1rem;
-  }
-  @media(max-width:600px){
-    .lb-btn{ width:46px; height:46px; }
-    #lb img{ max-height:74vh; }
-  }
-
-  /* ---------- HEARTS ---------- */
-  .like{
-    position:absolute; top:20px; right:20px; z-index:2;
-    display:inline-flex; align-items:center; gap:.4em;
-    background:rgba(251,247,240,.86); backdrop-filter:blur(4px);
-    border:1px solid var(--line); border-radius:99px;
-    padding:.32em .72em; cursor:pointer;
-    font-family:'Jost',sans-serif; font-size:.8rem; color:var(--ink); line-height:1;
-    transition:transform .15s, background .2s; user-select:none;
-  }
-  .like:hover{ background:#fff; }
-  .like:active{ transform:scale(.9); }
-  .like .ic{ font-size:1rem; filter:grayscale(1) opacity(.6); transition:filter .2s, transform .2s; }
-  .like.on .ic{ filter:none; transform:scale(1.15); color:#c0392b; }
-  @keyframes floatheart{ 0%{opacity:1; transform:translateY(0) scale(1);} 100%{opacity:0; transform:translateY(-46px) scale(1.7);} }
-  .fh{ pointer-events:none; color:#c0392b; font-size:1.5rem; animation:floatheart .9s ease-out forwards; z-index:60; }
-
-  /* ---------- GUESTBOOK ---------- */
-  #guestbook{ position:relative; z-index:1; max-width:720px; margin:8vh auto 0; padding:0 5vw; }
-  #guestbook h2{ font-family:'Cormorant Garamond',serif; font-weight:500; text-align:center; font-size:clamp(1.9rem,4.5vw,2.8rem); margin:0 0 .2rem; }
-  #guestbook .gb-sub{ text-align:center; color:var(--muted); font-family:'Cormorant Garamond',serif; font-style:italic; margin:0 0 2rem; font-size:1.1rem; }
-  .gb-form{ background:var(--frame); border:1px solid var(--line); padding:1.4rem; box-shadow:0 8px 26px -14px var(--shadow); margin-bottom:2.4rem; }
-  .gb-form input, .gb-form textarea{ width:100%; padding:.7rem .8rem; margin-bottom:.7rem; border:1px solid var(--line); background:#fff; font-family:'Jost',sans-serif; font-size:.95rem; border-radius:6px; color:var(--ink); resize:vertical; }
-  .gb-form textarea{ min-height:84px; }
-  .gb-form button{ font-family:'Jost',sans-serif; letter-spacing:.03em; border:1px solid var(--gold); background:var(--gold); color:#fff; padding:.62rem 1.4rem; border-radius:6px; cursor:pointer; font-size:.92rem; transition:opacity .2s; }
-  .gb-form button:hover{ opacity:.9; } .gb-form button:disabled{ opacity:.5; cursor:not-allowed; }
-  .gb-entry{ border-bottom:1px solid var(--line); padding:1.1rem .2rem; }
-  .gb-entry .who{ font-family:'Cormorant Garamond',serif; font-weight:600; font-size:1.2rem; }
-  .gb-entry .when{ color:var(--muted); font-size:.76rem; margin-left:.6rem; letter-spacing:.04em; }
-  .gb-entry .msg{ margin:.35rem 0 0; }
-  .gb-empty{ text-align:center; color:var(--muted); font-style:italic; font-family:'Cormorant Garamond',serif; padding:1rem 0; }
-
-  /* ---------- VIEW COUNTER ---------- */
-  .viewcount{ font-family:'Jost',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-size:.68rem; color:var(--muted); margin:0 0 1.3rem; }
+  #lb-close{ top:3vh; right:max(2vw,14px); transform:none; width:48px; height:48px; font-size:1.3rem; }
+  #lb-play{ top:3vh; left:max(2vw,14px); transform:none; width:48px; height:48px; font-size:1rem; }
+  @media(max-width:600px){ .lb-btn{ width:46px; height:46px; } #lb img{ max-height:74vh; } }
 </style>
 </head>
 <body>
 
-  <header class="hero">
-    <p class="eyebrow" id="c-sub"></p>
-    <h1 id="c-title"></h1>
-    <div class="rule"></div>
-    <p class="intro" id="c-intro"></p>
-  </header>
+  <!-- ===================== HOME ===================== -->
+  <div id="home">
+    <header class="hero" id="hero">
+      <div class="layer" id="layerA"></div>
+      <div class="layer" id="layerB"></div>
+      <div class="scrim"></div>
+      <div class="inner">
+        <p class="eyebrow" id="c-eyebrow"></p>
+        <h1 id="c-name"></h1>
+        <p class="tagline" id="c-tagline"></p>
+      </div>
+      <button class="scrollcue" id="scrollcue" aria-label="Scroll to albums">
+        <span>Albums</span><span class="arr">&#8595;</span>
+      </button>
+    </header>
 
-  <main>
-    <section id="gallery"></section>
+    <section class="section-head" id="albums-head">
+      <h2>Albums</h2>
+      <span class="meta" id="albums-meta"></span>
+    </section>
+    <section id="albums"></section>
+
     <div class="empty" id="empty" hidden>
-      <h2>The gallery is being prepared</h2>
-      <p>Photographs from the evening are being edited and arranged.<br>Please check back here soon.</p>
+      <h2>The collection is being prepared</h2>
+      <p>Drop folders of photos into <code>photos/&lt;album-name&gt;/</code> and rebuild,<br>or publish them from the <a href="./upload.html">upload page</a>.</p>
     </div>
-  </main>
+  </div>
 
-  <section id="guestbook" hidden>
-    <h2>Guestbook</h2>
-    <p class="gb-sub">Leave a note for Berwin and the dancers.</p>
-    <form class="gb-form" id="gb-form">
-      <input id="gb-name" maxlength="80" placeholder="Your name" autocomplete="name" required>
-      <textarea id="gb-msg" maxlength="1000" placeholder="Your message…" required></textarea>
-      <button type="submit" id="gb-send">Sign the guestbook</button>
-    </form>
-    <div id="gb-list"></div>
-  </section>
+  <!-- ===================== ALBUM VIEW ===================== -->
+  <div id="view">
+    <div class="view-head">
+      <button class="backlink" id="backlink">&#8592; All albums</button>
+      <h1 id="v-title"></h1>
+      <div class="rule"></div>
+      <p class="desc" id="v-desc"></p>
+      <p class="vcount" id="v-count"></p>
+    </div>
+    <section id="gallery"></section>
+  </div>
 
   <footer>
     <div class="mark"></div>
-    <p class="viewcount" id="viewcount" hidden></p>
     <p id="c-footer"></p>
   </footer>
 
@@ -301,87 +350,177 @@
     <div class="cap" id="lb-cap"></div>
   </div>
 
-  <!-- generated list of photos -->
-  <script src="photos.js"></script>
-  <!-- firebase config (interactions stay off until this is set) -->
-  <script src="config.js"></script>
+  <!-- generated list of albums -->
+  <script src="albums.js"></script>
 
   <script>
   (function(){
-    const cfg = window.GALLERY_CONFIG || {};
-    document.getElementById('c-title').textContent  = cfg.title    || 'Gallery';
-    document.getElementById('c-sub').textContent    = cfg.subtitle || '';
-    document.getElementById('c-intro').textContent  = cfg.intro    || '';
-    document.getElementById('c-footer').textContent = cfg.footer   || '';
-    document.title = (cfg.title || 'Gallery') + ' — A Gallery';
+    const cfg = window.SITE_CONFIG || {};
+    document.getElementById('c-eyebrow').textContent = cfg.eyebrow || '';
+    document.getElementById('c-name').textContent    = cfg.name    || 'My Album';
+    document.getElementById('c-tagline').textContent = cfg.tagline || '';
+    document.getElementById('c-footer').textContent  = cfg.footer  || '';
+    document.title = (cfg.name || 'My Album') + ' · Album';
 
-    const photos = (window.PHOTOS || []);
-    const gallery = document.getElementById('gallery');
+    const albums = (window.ALBUMS || []).filter(a => a && a.photos && a.photos.length);
+    const allPhotos = albums.flatMap(a => a.photos);
 
-    if(!photos.length){
+    const homeEl   = document.getElementById('home');
+    const viewEl   = document.getElementById('view');
+    const albumsEl = document.getElementById('albums');
+
+    /* ---------- empty state ---------- */
+    if(!albums.length){
+      document.getElementById('hero').classList.add('bare');
+      document.getElementById('scrollcue').style.display = 'none';
+      document.getElementById('albums-head').style.display = 'none';
       document.getElementById('empty').hidden = false;
       return;
     }
 
-    // build grid
-    photos.forEach((p, i) => {
-      const fig = document.createElement('figure');
-      fig.className = 'shot';
-      fig.dataset.index = i;
+    /* ---------- HERO: cycling featured photos ---------- */
+    (function heroCycle(){
+      const hero = document.getElementById('hero');
+      const layers = [document.getElementById('layerA'), document.getElementById('layerB')];
+      // shuffle a featured pool from across all albums
+      const pool = allPhotos.slice();
+      for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+      let idx = 0, active = 0;
+      function preload(src){ const im = new Image(); im.src = src; }
+      function set(layer, src){ layer.style.backgroundImage = `url("${src}")`; }
+      // first frame
+      set(layers[0], pool[0].src);
+      layers[0].classList.add('show');
+      preload(pool[1 % pool.length].src);
+      if(pool.length < 2) return;        // nothing to cycle through
+      setInterval(() => {
+        idx = (idx + 1) % pool.length;
+        const next = (active + 1) % 2;
+        set(layers[next], pool[idx].src);
+        layers[next].classList.add('show');
+        layers[active].classList.remove('show');
+        active = next;
+        preload(pool[(idx + 1) % pool.length].src);
+      }, 5200);
+    })();
 
-      const wrap = document.createElement('div');
-      wrap.className = 'imgwrap';
-      const img = document.createElement('img');
-      img.src = p.src;
-      img.alt = p.title || ('Photo ' + (i+1));
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      wrap.appendChild(img);
-      fig.appendChild(wrap);
-
-      if(p.title){
-        const cap = document.createElement('figcaption');
-        cap.textContent = p.title;
-        fig.appendChild(cap);
-      }
-      fig.addEventListener('click', () => openLB(i));
-      gallery.appendChild(fig);
+    document.getElementById('scrollcue').addEventListener('click', () => {
+      document.getElementById('albums-head').scrollIntoView({ behavior:'smooth' });
     });
 
-    // fade-in on scroll
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
-    }, {rootMargin:'0px 0px -8% 0px'});
-    document.querySelectorAll('figure.shot').forEach(f=>io.observe(f));
+    /* ---------- ALBUM CARDS ---------- */
+    document.getElementById('albums-meta').textContent =
+      `${albums.length} album${albums.length>1?'s':''} · ${allPhotos.length} photo${allPhotos.length>1?'s':''}`;
+
+    albums.forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'album-card';
+      const cover = a.cover || (a.photos[0] && a.photos[0].src);
+      card.innerHTML = `
+        <div class="cover">
+          ${cover ? `<img src="${cover}" alt="${esc(a.title)}" loading="lazy" decoding="async">`
+                  : `<div class="empty-cover">No cover</div>`}
+          <span class="count">${a.photos.length} photo${a.photos.length>1?'s':''}</span>
+        </div>
+        <div class="body">
+          <h3>${esc(a.title)}</h3>
+          ${a.desc ? `<p>${esc(a.desc)}</p>` : ''}
+        </div>`;
+      card.addEventListener('click', () => { location.hash = 'album/' + encodeURIComponent(a.id); });
+      albumsEl.appendChild(card);
+    });
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+    /* fade album cards in on scroll */
+    const ioCards = new IntersectionObserver((es)=>{
+      es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); ioCards.unobserve(e.target); }});
+    }, {rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.album-card').forEach(c=>ioCards.observe(c));
+
+    /* ============================================================
+       ALBUM VIEW + LIGHTBOX
+       ============================================================ */
+    const gallery = document.getElementById('gallery');
+    let current = [];   // photos in the currently open album
+
+    function openAlbum(album){
+      current = album.photos;
+      document.getElementById('v-title').textContent = album.title;
+      const descEl = document.getElementById('v-desc');
+      descEl.textContent = album.desc || '';
+      descEl.style.display = album.desc ? '' : 'none';
+      document.getElementById('v-count').textContent =
+        `${album.photos.length} photograph${album.photos.length>1?'s':''}`;
+
+      gallery.innerHTML = '';
+      album.photos.forEach((p, i) => {
+        const fig = document.createElement('figure');
+        fig.className = 'shot';
+        const wrap = document.createElement('div'); wrap.className = 'imgwrap';
+        const img = document.createElement('img');
+        img.src = p.src; img.alt = p.title || ('Photo ' + (i+1));
+        img.loading = 'lazy'; img.decoding = 'async';
+        wrap.appendChild(img); fig.appendChild(wrap);
+        if(p.title){ const cap = document.createElement('figcaption'); cap.textContent = p.title; fig.appendChild(cap); }
+        fig.addEventListener('click', () => openLB(i));
+        gallery.appendChild(fig);
+      });
+
+      const io = new IntersectionObserver((es)=>{
+        es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+      }, {rootMargin:'0px 0px -8% 0px'});
+      gallery.querySelectorAll('figure.shot').forEach(f=>io.observe(f));
+
+      homeEl.classList.add('hidden');
+      viewEl.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function showHome(){
+      closeLB();
+      viewEl.classList.remove('active');
+      homeEl.classList.remove('hidden');
+    }
+
+    /* ---------- ROUTING ---------- */
+    function route(){
+      const m = (location.hash || '').match(/^#album\/(.+)$/);
+      if(m){
+        const id = decodeURIComponent(m[1]);
+        const album = albums.find(a => a.id === id);
+        if(album){ openAlbum(album); return; }
+      }
+      showHome();
+    }
+    window.addEventListener('hashchange', route);
+    document.getElementById('backlink').addEventListener('click', () => { location.hash = ''; });
 
     /* ---------- LIGHTBOX ---------- */
     const lb     = document.getElementById('lb');
     const lbImg  = document.getElementById('lb-img');
     const lbCap  = document.getElementById('lb-cap');
     const lbCount= document.getElementById('lb-count');
-    let cur = 0;
-
-    const playBtn = document.getElementById('lb-play');
-    let timer = null;
+    const playBtn= document.getElementById('lb-play');
+    let cur = 0, timer = null;
 
     function show(i){
-      cur = (i + photos.length) % photos.length;
-      const p = photos[cur];
+      cur = (i + current.length) % current.length;
+      const p = current[cur];
       lbImg.style.opacity = 0;
       const next = new Image();
       next.onload = () => {
         lbImg.src = p.src; lbImg.style.opacity = 1;
-        lbImg.classList.remove('kb'); void lbImg.offsetWidth; lbImg.classList.add('kb'); // restart drift
+        lbImg.classList.remove('kb'); void lbImg.offsetWidth; lbImg.classList.add('kb');
       };
       next.src = p.src;
       lbCap.textContent = p.title || '';
-      lbCount.textContent = (cur+1) + ' / ' + photos.length;
-      // preload neighbours
-      [cur+1, cur-1].forEach(n=>{ const q=photos[(n+photos.length)%photos.length]; if(q){ new Image().src=q.src; }});
+      lbCount.textContent = (cur+1) + ' / ' + current.length;
+      [cur+1, cur-1].forEach(n=>{ const q=current[(n+current.length)%current.length]; if(q){ new Image().src=q.src; }});
     }
     function setPlay(on){
       if(on){ playBtn.innerHTML='&#10074;&#10074;'; playBtn.setAttribute('aria-label','Pause slideshow'); timer=setInterval(()=>show(cur+1), 4500); }
-      else { playBtn.innerHTML='&#9658;'; playBtn.setAttribute('aria-label','Play slideshow'); clearInterval(timer); timer=null; }
+      else  { playBtn.innerHTML='&#9658;'; playBtn.setAttribute('aria-label','Play slideshow'); clearInterval(timer); timer=null; }
     }
     function openLB(i){ show(i); lb.classList.add('open'); document.body.style.overflow='hidden'; }
     function closeLB(){ setPlay(false); lb.classList.remove('open'); document.body.style.overflow=''; }
@@ -399,110 +538,17 @@
       else if(e.key==='ArrowLeft') show(cur-1);
       else if(e.key===' '){ e.preventDefault(); setPlay(!timer); }
     });
-
-    // swipe
     let tx=0;
     lb.addEventListener('touchstart', e=>{ tx=e.changedTouches[0].clientX; }, {passive:true});
     lb.addEventListener('touchend', e=>{
       const dx=e.changedTouches[0].clientX - tx;
       if(Math.abs(dx)>50) show(dx<0 ? cur+1 : cur-1);
     }, {passive:true});
+
+    // expose closeLB to showHome scope already handled; initial route
+    window.__closeLB = closeLB;
+    route();
   })();
-  </script>
-
-  <!-- ===================== LIVE INTERACTIONS (Firebase) ===================== -->
-  <script type="module">
-  const cfg = window.FIREBASE_CONFIG;
-  const ready = cfg && typeof cfg === 'object' && cfg.apiKey && cfg.projectId;
-  if (ready) {
-    const [{ initializeApp }, fs] = await Promise.all([
-      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"),
-      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js")
-    ]);
-    const { getFirestore, doc, setDoc, addDoc, collection, onSnapshot, query, orderBy, serverTimestamp, increment } = fs;
-    const db = getFirestore(initializeApp(cfg));
-
-    const photos = window.PHOTOS || [];
-    const idOf = src => src.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 120);
-
-    /* ---------- HEARTS ---------- */
-    const countEls = {};
-    document.querySelectorAll('figure.shot').forEach((fig, i) => {
-      if (!photos[i]) return;
-      const id = idOf(photos[i].src);
-      const btn = document.createElement('button');
-      btn.className = 'like'; btn.type = 'button'; btn.setAttribute('aria-label', 'Love this photo');
-      btn.innerHTML = '<span class="ic">❤</span><span class="n">0</span>';
-      if (localStorage.getItem('like_' + id) === '1') btn.classList.add('on');
-      btn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const on = btn.classList.toggle('on');
-        if (on) { localStorage.setItem('like_' + id, '1'); floatHeart(btn); }
-        else localStorage.removeItem('like_' + id);
-        try { await setDoc(doc(db, 'likes', id), { count: increment(on ? 1 : -1) }, { merge: true }); }
-        catch (err) { btn.classList.toggle('on'); }
-      });
-      fig.appendChild(btn);
-      countEls[id] = btn.querySelector('.n');
-    });
-    onSnapshot(collection(db, 'likes'), snap => {
-      snap.forEach(d => { const el = countEls[d.id]; if (el) el.textContent = d.data().count || 0; });
-    });
-    function floatHeart(btn) {
-      const r = btn.getBoundingClientRect();
-      const fh = document.createElement('span');
-      fh.className = 'fh'; fh.textContent = '❤';
-      fh.style.cssText = `position:fixed; left:${r.left + r.width / 2 - 10}px; top:${r.top}px;`;
-      document.body.appendChild(fh); setTimeout(() => fh.remove(), 900);
-    }
-
-    /* ---------- VIEW COUNTER ---------- */
-    const vc = document.getElementById('viewcount');
-    try {
-      if (!sessionStorage.getItem('counted')) {
-        sessionStorage.setItem('counted', '1');
-        await setDoc(doc(db, 'stats', 'views'), { count: increment(1) }, { merge: true });
-      }
-    } catch (e) {}
-    onSnapshot(doc(db, 'stats', 'views'), d => {
-      const n = d.data() && d.data().count;
-      if (n) { vc.hidden = false; vc.textContent = `Seen by ${n} visitor${n === 1 ? '' : 's'}`; }
-    });
-
-    /* ---------- GUESTBOOK ---------- */
-    document.getElementById('guestbook').hidden = false;
-    const form = document.getElementById('gb-form');
-    const listEl = document.getElementById('gb-list');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('gb-name').value.trim().slice(0, 80);
-      const msg = document.getElementById('gb-msg').value.trim().slice(0, 1000);
-      if (!name || !msg) return;
-      const btn = document.getElementById('gb-send');
-      btn.disabled = true; btn.textContent = 'Sending…';
-      try {
-        await addDoc(collection(db, 'guestbook'), { name, message: msg, ts: serverTimestamp() });
-        document.getElementById('gb-msg').value = '';
-        btn.textContent = 'Thank you!';
-        setTimeout(() => { btn.textContent = 'Sign the guestbook'; btn.disabled = false; }, 1600);
-      } catch (err) { btn.textContent = 'Try again'; btn.disabled = false; }
-    });
-    onSnapshot(query(collection(db, 'guestbook'), orderBy('ts', 'desc')), snap => {
-      if (snap.empty) { listEl.innerHTML = '<p class="gb-empty">Be the first to leave a note.</p>'; return; }
-      listEl.innerHTML = '';
-      snap.forEach(d => {
-        const e = d.data();
-        const entry = document.createElement('div'); entry.className = 'gb-entry';
-        const head = document.createElement('div');
-        const who = document.createElement('span'); who.className = 'who'; who.textContent = e.name || 'Anonymous';
-        const when = document.createElement('span'); when.className = 'when';
-        when.textContent = e.ts && e.ts.toDate ? e.ts.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
-        head.appendChild(who); head.appendChild(when);
-        const m = document.createElement('p'); m.className = 'msg'; m.textContent = e.message || '';
-        entry.appendChild(head); entry.appendChild(m); listEl.appendChild(entry);
-      });
-    });
-  }
   </script>
 </body>
 </html>

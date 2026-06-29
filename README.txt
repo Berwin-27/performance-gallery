@@ -1,14 +1,25 @@
-PERFORMANCE GALLERY — how to use
-=================================
+BERWIN · ALBUM — how to use
+============================
 
-1. ADD YOUR PHOTOS
-   Drop your edited images into the "photos" folder.
+This is a personal photo-album website: a cycling featured hero on the
+home page, then a grid of albums you can click into. Each album is just
+a folder of photos.
+
+1. MAKE AN ALBUM
+   Inside the "photos" folder, make a sub-folder named after the album
+   and drop your images in. Examples:
+       photos/performance/finale.jpg
+       photos/iceland/sunrise.jpg
+       photos/soccer-game/goal.jpg
    (.jpg, .jpeg, .png, .webp, .avif, .gif all work)
+   The folder name becomes the album title — "iceland-2025" shows as
+   "Iceland 2025". Loose photos dropped straight in "photos" (no
+   sub-folder) collect into a "Moments" album.
 
-2. REBUILD THE LIST
+2. REBUILD
    Open this folder in a terminal and run:
        node build.mjs
-   This scans the photos folder and updates the gallery.
+   This scans every album folder and updates the site (albums.js).
    Run it again any time you add or remove photos.
 
 3. VIEW IT
@@ -16,22 +27,32 @@ PERFORMANCE GALLERY — how to use
 
 ------------------------------------------------------------
 
-CHANGE THE TITLE / TEXT
+NAME ALBUMS / ADD DESCRIPTIONS / CHOOSE A COVER
+   Open albums.json. Each album folder gets an entry, e.g.:
+       "iceland-2025": {
+         "title": "Iceland, 2025",
+         "desc":  "Two weeks chasing waterfalls and light.",
+         "cover": "sunrise.jpg",        // a filename inside the album
+         "order": 2                      // lower numbers show first
+       }
+   Then run "node build.mjs" again. Your labels are never erased on rebuild.
+
+CHANGE THE SITE NAME / TAGLINE
    Open index.html and edit the block near the top marked
-   "EDIT YOUR TITLE / TEXT HERE" (title, subtitle, intro, footer).
+   "EDIT YOUR SITE TEXT HERE" (name, eyebrow, tagline, footer).
 
-ADD CAPTIONS (optional)
-   Open captions.json — it lists every photo filename.
-   Type a caption next to any file, e.g.:
-       "finale-bow.jpg": "The final bow"
-   Then run "node build.mjs" again. Captions are never erased on rebuild.
+ADD PER-PHOTO CAPTIONS (optional)
+   Open captions.json — it lists every photo by its path, e.g.:
+       "performance/finale.jpg": "The final bow"
+   Then run "node build.mjs" again. Captions survive rebuilds.
 
-TIP FOR 60+ PHOTOS
-   Export your edits at a reasonable size (long edge ~2000px is plenty
-   for screens) so the gallery loads fast for parents on phones.
+PUBLISH FROM THE BROWSER (no terminal)
+   Open upload.html. Paste your GitHub key once, type an album name,
+   drop photos in, press Publish. It optimizes the images, uploads them
+   into photos/<album>/, regenerates albums.js, and the live site
+   updates on its own in about a minute.
 
-SHARING IT
-   To send to parents, the easiest free option is to drag this whole
-   folder into a host like Netlify Drop (app.netlify.com/drop) or
-   GitHub Pages — that gives you a link anyone can open. Ask me and
-   I'll walk you through it.
+THE FEATURED HERO
+   The big cycling images on the home page are pulled at random from
+   across every album — no setup needed. The more albums you add, the
+   richer it gets.

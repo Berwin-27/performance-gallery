@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Publish · Berwin Art Gallery</title>
+<title>Publish · Berwin Album</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -27,10 +27,13 @@
   .card h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.4rem; margin:0 0 .2rem; }
   .card h2 .step{ color:var(--gold); margin-right:.5rem; }
   .card p.hint{ color:var(--muted); font-size:.92rem; margin:.2rem 0 1rem; }
+  label.fld{ display:block; font-size:.8rem; letter-spacing:.04em; color:var(--muted); margin:0 0 .35rem; text-transform:uppercase; }
   input[type=password], input[type=text]{
     width:100%; padding:.7rem .8rem; border:1px solid var(--line); background:#fff;
     font-family:'Jost',sans-serif; font-size:.95rem; border-radius:6px; color:var(--ink);
   }
+  .slughint{ font-size:.82rem; color:var(--muted); margin:.5rem 0 0; }
+  .slughint code{ background:var(--bg); padding:.1em .4em; border-radius:4px; font-family:ui-monospace,monospace; color:var(--ink); }
   .row{ display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
   button{
     font-family:'Jost',sans-serif; font-weight:400; letter-spacing:.04em;
@@ -48,6 +51,11 @@
   details ol{ margin:.6rem 0 0; padding-left:1.2rem; color:var(--muted); }
   details code{ background:var(--bg); padding:.1em .4em; border-radius:4px; font-family:ui-monospace,monospace; font-size:.82rem; color:var(--ink); }
 
+  .existing{ font-size:.85rem; color:var(--muted); margin:.6rem 0 0; min-height:1.2em; }
+  .existing b{ color:var(--ink); font-weight:500; }
+  .chip{ display:inline-block; background:var(--bg); border:1px solid var(--line); border-radius:99px; padding:.18em .7em; margin:.25em .3em 0 0; font-size:.82rem; cursor:pointer; color:var(--ink); }
+  .chip:hover{ border-color:var(--gold); color:var(--gold); }
+
   #drop{
     border:2px dashed var(--line); border-radius:10px; background:#fff;
     padding:3rem 1.5rem; text-align:center; cursor:pointer; transition:.2s;
@@ -55,11 +63,17 @@
   #drop.hot{ border-color:var(--gold); background:#fffdf8; }
   #drop .big{ font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--ink); }
   #drop .small{ color:var(--muted); font-size:.9rem; margin-top:.4rem; }
-  #picked{ margin-top:1rem; font-size:.92rem; color:var(--ink); }
-  #thumbs{ display:flex; flex-wrap:wrap; gap:6px; margin-top:1rem; }
-  #thumbs img{ width:64px; height:64px; object-fit:cover; border-radius:4px; border:1px solid var(--line); }
-  #thumbs .more{ width:64px; height:64px; display:flex; align-items:center; justify-content:center;
-    background:var(--bg); border:1px solid var(--line); border-radius:4px; color:var(--muted); font-size:.8rem; }
+
+  /* album breakdown */
+  #plan{ margin-top:1rem; }
+  .albumrow{ display:flex; align-items:center; gap:.7rem; padding:.55rem 0; border-bottom:1px solid var(--line); }
+  .albumrow:last-child{ border-bottom:none; }
+  .albumrow .ttl{ font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--ink); flex:1; }
+  .albumrow .ttl .new{ font-family:'Jost',sans-serif; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-left:.5em; }
+  .albumrow .ttl .add{ font-family:'Jost',sans-serif; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-left:.5em; }
+  .albumrow .cnt{ color:var(--muted); font-size:.85rem; white-space:nowrap; }
+  .albumrow .mini{ display:flex; gap:4px; }
+  .albumrow .mini img{ width:40px; height:40px; object-fit:cover; border-radius:3px; border:1px solid var(--line); }
 
   .barwrap{ height:8px; background:var(--bg); border-radius:99px; overflow:hidden; margin:1rem 0 .6rem; display:none; }
   .bar{ height:100%; width:0; background:var(--gold); transition:width .2s; }
@@ -72,8 +86,8 @@
 <body>
 <div class="wrap">
   <p class="eyebrow">Private · for Berwin only</p>
-  <h1>Publish to the Gallery</h1>
-  <p class="sub">Drag your folder of photos in, then press Publish. The live gallery updates on its own.</p>
+  <h1>Add to the Album</h1>
+  <p class="sub">Drag in folders — each folder becomes its own album. Then press Publish; the live site updates on its own.</p>
 
   <!-- STEP 1: KEY -->
   <div class="card">
@@ -89,7 +103,7 @@
       <summary>How do I get a key? (one-time, ~2 min)</summary>
       <ol>
         <li>Go to <code>github.com/settings/tokens?type=beta</code> (Fine-grained tokens).</li>
-        <li>Click <strong>Generate new token</strong>. Name it anything (e.g. "gallery").</li>
+        <li>Click <strong>Generate new token</strong>. Name it anything (e.g. "album").</li>
         <li>Under <strong>Repository access</strong> → <em>Only select repositories</em> → choose <code>performance-gallery</code>.</li>
         <li>Under <strong>Permissions</strong> → <em>Repository permissions</em> → set <code>Contents</code> to <strong>Read and write</strong>.</li>
         <li>Click <strong>Generate token</strong>, copy it, and paste it above. Press Save.</li>
@@ -99,24 +113,40 @@
 
   <!-- STEP 2: DROP -->
   <div class="card">
-    <h2><span class="step">2</span>Add your photos</h2>
-    <p class="hint">Drag a folder straight from File Explorer, or click to choose one. Full-size photos are fine — they're automatically resized and optimized for fast loading before upload. Your originals aren't touched.</p>
+    <h2><span class="step">2</span>Drop your folders</h2>
+    <p class="hint">Drag one or more folders straight from File Explorer. Each folder becomes an album, named after the folder. Full-size photos are fine — they're resized and optimized before upload; your originals aren't touched.</p>
     <div id="drop">
-      <div class="big">Drop your folder here</div>
-      <div class="small">…or click to browse</div>
+      <div class="big">Drop folders here</div>
+      <div class="small">…or click to choose a folder</div>
     </div>
     <input type="file" id="fileInput" webkitdirectory multiple hidden>
-    <div id="picked"></div>
-    <div id="thumbs"></div>
+    <input type="file" id="fileInputFlat" accept="image/*" multiple hidden>
+    <div class="row" style="margin-top:.8rem;">
+      <button class="ghost" id="pickFolder">Choose a folder</button>
+      <button class="ghost" id="pickFiles">Choose loose photos</button>
+      <button class="ghost" id="clearPick" hidden>Clear</button>
+    </div>
+    <div class="existing" id="existing"></div>
   </div>
 
-  <!-- STEP 3: PUBLISH -->
+  <!-- STEP 3: REVIEW -->
+  <div class="card" id="reviewCard" style="display:none;">
+    <h2><span class="step">3</span>Review albums</h2>
+    <div id="looseWrap" style="display:none; margin-bottom:1rem;">
+      <label class="fld" for="album" id="looseLabel">Album name for the loose photos</label>
+      <input type="text" id="album" placeholder="e.g. Moments" autocomplete="off">
+      <p class="slughint" id="slughint"></p>
+    </div>
+    <div id="plan"></div>
+  </div>
+
+  <!-- STEP 4: PUBLISH -->
   <div class="card">
-    <h2><span class="step">3</span>Publish</h2>
-    <button class="pub" id="publish" disabled>Publish to gallery</button>
+    <h2><span class="step">4</span>Publish</h2>
+    <button class="pub" id="publish" disabled>Publish to the album</button>
     <div class="barwrap" id="barwrap"><div class="bar" id="bar"></div></div>
     <div id="log"></div>
-    <a class="gallink" id="viewlink" href="./index.html" target="_blank">View the live gallery ↗</a>
+    <a class="gallink" id="viewlink" href="./index.html" target="_blank">View the live site ↗</a>
   </div>
 </div>
 
@@ -125,113 +155,233 @@ const OWNER = "Berwin-27";
 const REPO  = "performance-gallery";
 const BRANCH = "main";
 const PHOTO_DIR = "photos";
+const ROOT_ALBUM = "_moments";
 const EXT = ["jpg","jpeg","png","webp","avif","gif"];
 const MAX_EDGE = 2400;       // longest side of optimized photo, in pixels
 const JPEG_QUALITY = 0.85;   // 0–1; higher = better quality, bigger file
 const collator = new Intl.Collator(undefined,{numeric:true,sensitivity:"base"});
 
 let token = localStorage.getItem("gallery_token") || "";
-let files = [];   // {name, file}
+let items = [];          // [{ file, folder }]  folder = album title (from folder) or null (loose)
+let existingIds = [];    // album ids already in the repo
 
 const $ = id => document.getElementById(id);
+
+/* ---------- helpers shared with build.mjs ---------- */
+const enc = p => p.split("/").map(encodeURIComponent).join("/");
+const slugify = s => s.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || "album";
+const prettify = id => id === ROOT_ALBUM ? "Moments"
+  : id.replace(/[-_]+/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+const folderTitle = name => prettify(slugify(name));   // normalize a folder name to a clean album title
+const isImg = name => EXT.includes(name.slice(name.lastIndexOf(".")+1).toLowerCase());
+
+function buildAlbums(relPaths, captions, meta){
+  const groups = new Map();
+  for(const rel of [...relPaths].sort(collator.compare)){
+    const slash = rel.indexOf("/");
+    const id = slash === -1 ? ROOT_ALBUM : rel.slice(0, slash);
+    if(!groups.has(id)) groups.set(id, []);
+    groups.get(id).push({ rel, src:`${PHOTO_DIR}/${enc(rel)}`, title: captions[rel] || "" });
+  }
+  const albums = [...groups.entries()].map(([id, photos]) => {
+    const m = meta[id] || {};
+    let cover = null;
+    if(m.cover){
+      const cand = m.cover.includes("/") ? m.cover : `${id===ROOT_ALBUM?"":id+"/"}${m.cover}`;
+      const hit = photos.find(p => p.rel === cand);
+      if(hit) cover = hit.src;
+    }
+    if(!cover) cover = photos[0].src;
+    return { id, title: m.title || prettify(id), desc: m.desc || "",
+      order: typeof m.order === "number" ? m.order : 999, cover,
+      photos: photos.map(({src,title}) => ({src,title})) };
+  });
+  albums.sort((a,b) => a.order - b.order || collator.compare(a.title, b.title));
+  return albums;
+}
+
+/* ---------- the publish plan: map each photo to an album ---------- */
+// Returns Map<slug, { title, files:[File] }>
+function computePlan(){
+  const folderTitles = [...new Set(items.filter(i=>i.folder).map(i=>i.folder))];
+  const looseItems = items.filter(i=>!i.folder);
+  // when exactly one folder and nothing loose, the name field can rename that album
+  const renameSingle = (folderTitles.length===1 && looseItems.length===0)
+    ? $("album").value.trim() : "";
+  const looseName = $("album").value.trim() || "Moments";
+
+  const plan = new Map();
+  for(const it of items){
+    let title;
+    if(it.folder) title = renameSingle || it.folder;
+    else          title = looseName;
+    const slug = slugify(title);
+    if(!plan.has(slug)) plan.set(slug, { title, files:[] });
+    plan.get(slug).files.push(it.file);
+  }
+  return plan;
+}
+function planState(){
+  const folderTitles = [...new Set(items.filter(i=>i.folder).map(i=>i.folder))];
+  const hasLoose = items.some(i=>!i.folder);
+  return { folderCount: folderTitles.length, hasLoose, singleFolder: folderTitles.length===1 && !hasLoose };
+}
 
 /* ---------- token ---------- */
 function paintTok(){
   const el = $("tokstate");
-  if(token){ el.textContent = "✓ Key saved on this computer."; el.className="tokstate ok"; $("token").value = ""; $("token").placeholder = "•••••• (saved)"; }
+  if(token){ el.textContent = "✓ Key saved on this computer."; el.className="tokstate ok"; $("token").value = ""; $("token").placeholder = "•••••• (saved)"; loadExisting(); }
   else { el.textContent = "No key saved yet."; el.className="tokstate"; }
   refreshPublishBtn();
 }
-$("saveTok").onclick = () => {
-  const v = $("token").value.trim();
-  if(!v){ return; }
-  token = v; localStorage.setItem("gallery_token", v); paintTok();
-};
+$("saveTok").onclick = () => { const v = $("token").value.trim(); if(!v) return; token = v; localStorage.setItem("gallery_token", v); paintTok(); };
 $("clearTok").onclick = () => { token=""; localStorage.removeItem("gallery_token"); paintTok(); };
-paintTok();
 
-/* ---------- file gathering ---------- */
-const isImg = name => EXT.includes(name.slice(name.lastIndexOf(".")+1).toLowerCase());
-
-function readEntry(entry, out){
-  return new Promise(resolve=>{
-    if(entry.isFile){ entry.file(f=>{ if(isImg(f.name)) out.push(f); resolve(); }, ()=>resolve()); }
-    else if(entry.isDirectory){
-      const reader = entry.createReader(); const all=[];
-      const batch = () => reader.readEntries(async ents=>{
-        if(!ents.length){ for(const e of all) await readEntry(e,out); resolve(); }
-        else { all.push(...ents); batch(); }
-      }, ()=>resolve());
-      batch();
-    } else resolve();
+/* ---------- existing albums (chips) ---------- */
+async function loadExisting(){
+  if(!token) return;
+  try{
+    existingIds = await fetchAlbumIds();
+    const el = $("existing");
+    if(!existingIds.length){ el.innerHTML = ""; return; }
+    el.innerHTML = "<b>Existing albums:</b> " +
+      existingIds.map(a => `<span class="chip" data-name="${prettify(a)}">${prettify(a)}</span>`).join("");
+    el.querySelectorAll(".chip").forEach(c => c.onclick = () => { $("album").value = c.dataset.name; renderPlan(); });
+  }catch(e){ /* ignore */ }
+}
+async function fetchAlbumIds(){
+  const ref = await gh(`/repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}`);
+  const commit = await gh(`/repos/${OWNER}/${REPO}/git/commits/${ref.object.sha}`);
+  const tree = await gh(`/repos/${OWNER}/${REPO}/git/trees/${commit.tree.sha}?recursive=1`);
+  const ids = new Set();
+  (tree.tree||[]).forEach(t => {
+    if(t.type==="blob" && t.path.startsWith(PHOTO_DIR+"/") && isImg(t.path)){
+      const rest = t.path.slice(PHOTO_DIR.length+1);
+      const slash = rest.indexOf("/");
+      ids.add(slash===-1 ? ROOT_ALBUM : rest.slice(0,slash));
+    }
   });
+  return [...ids].sort(collator.compare);
 }
 
-function setFiles(list){
-  // de-dupe by basename, natural sort
+/* ---------- gathering files ---------- */
+function readAll(reader){
+  return new Promise(res=>{ const all=[]; const batch=()=>reader.readEntries(es=>{ if(!es.length) res(all); else { all.push(...es); batch(); } }, ()=>res(all)); batch(); });
+}
+async function imagesUnder(entry){
+  const out=[];
+  async function walk(e){
+    if(e.isFile){ await new Promise(r=>e.file(f=>{ if(isImg(f.name)) out.push(f); r(); }, r)); }
+    else if(e.isDirectory){ const all=await readAll(e.createReader()); for(const c of all) await walk(c); }
+  }
+  await walk(entry);
+  return out;
+}
+
+function addItems(newItems){
+  // de-dupe by album+filename, keep natural order
   const map = new Map();
-  for(const f of list){ map.set(f.name, f); }
-  files = [...map.values()].sort((a,b)=>collator.compare(a.name,b.name));
-  renderPicked();
+  for(const it of [...items, ...newItems]){ map.set((it.folder||"~loose")+"/"+it.file.name, it); }
+  items = [...map.values()].sort((a,b)=> collator.compare((a.folder||"")+a.file.name, (b.folder||"")+b.file.name));
+  onItemsChanged(true);
 }
-
-function renderPicked(){
-  $("picked").textContent = files.length ? `${files.length} photo${files.length>1?"s":""} ready to publish.` : "";
-  const t = $("thumbs"); t.innerHTML = "";
-  files.slice(0,12).forEach(f=>{
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(f); img.onload = ()=>URL.revokeObjectURL(img.src);
-    t.appendChild(img);
-  });
-  if(files.length>12){ const d=document.createElement("div"); d.className="more"; d.textContent=`+${files.length-12}`; t.appendChild(d); }
-  refreshPublishBtn();
-}
+function clearItems(){ items=[]; onItemsChanged(true); }
 
 /* drop zone */
 const drop = $("drop");
 drop.onclick = () => $("fileInput").click();
+$("pickFolder").onclick = e => { e.preventDefault(); $("fileInput").click(); };
+$("pickFiles").onclick  = e => { e.preventDefault(); $("fileInputFlat").click(); };
+$("clearPick").onclick  = e => { e.preventDefault(); clearItems(); };
 drop.ondragover = e => { e.preventDefault(); drop.classList.add("hot"); };
 drop.ondragleave = () => drop.classList.remove("hot");
 drop.ondrop = async e => {
   e.preventDefault(); drop.classList.remove("hot");
   const entries = [...e.dataTransfer.items].map(i=>i.webkitGetAsEntry&&i.webkitGetAsEntry()).filter(Boolean);
+  const out = [];
   if(entries.length){
-    const out=[]; for(const en of entries) await readEntry(en,out); setFiles(out);
+    for(const en of entries){
+      if(en.isDirectory){ const imgs = await imagesUnder(en); const title = folderTitle(en.name); imgs.forEach(f=>out.push({file:f, folder:title})); }
+      else if(en.isFile){ await new Promise(r=>en.file(f=>{ if(isImg(f.name)) out.push({file:f, folder:null}); r(); }, r)); }
+    }
   } else {
-    setFiles([...e.dataTransfer.files].filter(f=>isImg(f.name)));
+    [...e.dataTransfer.files].filter(f=>isImg(f.name)).forEach(f=>out.push({file:f, folder:null}));
   }
+  addItems(out);
 };
-$("fileInput").onchange = e => setFiles([...e.target.files].filter(f=>isImg(f.name)));
+$("fileInput").onchange = e => {
+  const out = [...e.target.files].filter(f=>isImg(f.name)).map(f=>{
+    const rp = f.webkitRelativePath || ""; const top = rp.includes("/") ? rp.split("/")[0] : null;
+    return { file:f, folder: top ? folderTitle(top) : null };
+  });
+  addItems(out);
+};
+$("fileInputFlat").onchange = e => addItems([...e.target.files].filter(f=>isImg(f.name)).map(f=>({file:f, folder:null})));
+
+/* ---------- render ---------- */
+function onItemsChanged(newDrop){
+  const st = planState();
+  $("reviewCard").style.display = items.length ? "" : "none";
+  $("clearPick").hidden = !items.length;
+  // loose-name field: shown if there are loose photos, or to rename a single folder
+  const showField = st.hasLoose || st.singleFolder;
+  $("looseWrap").style.display = showField ? "" : "none";
+  $("looseLabel").textContent = st.singleFolder ? "Album name (rename this folder, optional)" : "Album name for the loose photos";
+  if(newDrop && st.singleFolder){
+    // prefill with the folder's name so it's editable
+    const t = items.find(i=>i.folder); if(t) $("album").value = t.folder;
+  }
+  if(newDrop && !showField) $("album").value = "";
+  renderPlan();
+}
+function renderPlan(){
+  const plan = computePlan();
+  const wrap = $("plan");
+  wrap.innerHTML = "";
+  const existSet = new Set(existingIds);
+  [...plan.entries()].forEach(([slug, info])=>{
+    const exists = existSet.has(slug);
+    const row = document.createElement("div"); row.className="albumrow";
+    const mini = info.files.slice(0,4).map(()=>"" ).join("");
+    row.innerHTML =
+      `<div class="mini"></div>
+       <div class="ttl">${escapeHtml(info.title)}<span class="${exists?'add':'new'}">${exists?'+ adds to existing':'new album'}</span></div>
+       <div class="cnt">${info.files.length} photo${info.files.length>1?"s":""}</div>`;
+    const miniEl = row.querySelector(".mini");
+    info.files.slice(0,4).forEach(f=>{ const im=document.createElement("img"); im.src=URL.createObjectURL(f); im.onload=()=>URL.revokeObjectURL(im.src); miniEl.appendChild(im); });
+    wrap.appendChild(row);
+  });
+  $("slughint").innerHTML = $("album").value.trim() ? `Saved under <code>${PHOTO_DIR}/${slugify($("album").value)}/</code>` : "";
+  refreshPublishBtn();
+}
+function escapeHtml(s){ return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+$("album").addEventListener("input", renderPlan);
 
 /* ---------- publish ---------- */
-function refreshPublishBtn(){ $("publish").disabled = !(token && files.length); }
+function refreshPublishBtn(){ $("publish").disabled = !(token && items.length); }
 
 function bufToB64(buf){
   const bytes = new Uint8Array(buf); let bin=""; const chunk=0x8000;
   for(let i=0;i<bytes.length;i+=chunk) bin += String.fromCharCode.apply(null, bytes.subarray(i,i+chunk));
   return btoa(bin);
 }
+function b64ToUtf8(b64){ const bin = atob((b64||"").replace(/\s/g,"")); return new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))); }
 const readAsBuf = file => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsArrayBuffer(file); });
-
 const outName = name => name.replace(/\.[^.]+$/, "") + ".jpg";
 
-// shrink + compress a full-size photo in the browser before uploading
 async function optimize(file){
   try{
     const bmp = await createImageBitmap(file, { imageOrientation:"from-image" });
     let w = bmp.width, h = bmp.height;
-    const scale = Math.min(1, MAX_EDGE / Math.max(w, h));   // only ever shrink
+    const scale = Math.min(1, MAX_EDGE / Math.max(w, h));
     w = Math.round(w*scale); h = Math.round(h*scale);
-    const canvas = document.createElement("canvas");
-    canvas.width = w; canvas.height = h;
+    const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
     canvas.getContext("2d").drawImage(bmp, 0, 0, w, h);
     if(bmp.close) bmp.close();
     const blob = await new Promise(r => canvas.toBlob(r, "image/jpeg", JPEG_QUALITY));
     if(!blob) throw new Error("encode failed");
     return { name: outName(file.name), blob };
-  }catch(e){
-    return { name: file.name, blob: file };   // fallback: upload original as-is
-  }
+  }catch(e){ return { name: file.name, blob: file }; }
 }
 
 async function gh(path, opts={}){
@@ -242,74 +392,77 @@ async function gh(path, opts={}){
   if(!res.ok){ throw new Error(`${res.status} ${res.statusText} — ${(await res.text()).slice(0,300)}`); }
   return res.json();
 }
-
+async function ghMaybeFile(path){
+  try{ const r = await gh(`/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`); return JSON.parse(b64ToUtf8(r.content)); }
+  catch(e){ return {}; }
+}
 function log(msg, cls=""){ const l=$("log"); l.textContent=msg; l.className=cls; }
 function prog(p){ $("bar").style.width = Math.round(p*100)+"%"; }
 
 $("publish").onclick = async () => {
-  if(!token || !files.length) return;
+  if(!token || !items.length) return;
+  const plan = computePlan();                 // Map<slug,{title,files}>
+  const totalToUpload = [...plan.values()].reduce((n,a)=>n+a.files.length,0);
   $("publish").disabled = true; $("barwrap").style.display="block"; prog(0);
   try{
-    log("Connecting to your gallery…");
+    log("Connecting to your album…");
     const ref = await gh(`/repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}`);
     const baseCommit = ref.object.sha;
     const commitObj = await gh(`/repos/${OWNER}/${REPO}/git/commits/${baseCommit}`);
     const baseTree = commitObj.tree.sha;
 
-    // existing photos in repo
     const tree = await gh(`/repos/${OWNER}/${REPO}/git/trees/${baseTree}?recursive=1`);
     const existing = new Set(
-      (tree.tree||[])
-        .filter(t=>t.type==="blob" && t.path.startsWith(PHOTO_DIR+"/") && isImg(t.path))
+      (tree.tree||[]).filter(t=>t.type==="blob" && t.path.startsWith(PHOTO_DIR+"/") && isImg(t.path))
         .map(t=>t.path.slice(PHOTO_DIR.length+1))
     );
+    const meta     = await ghMaybeFile("albums.json");
+    const captions = await ghMaybeFile("captions.json");
 
-    // upload each new file as a blob
     const treeItems = [];
-    for(let i=0;i<files.length;i++){
-      const f = files[i];
-      log(`Optimizing & uploading ${i+1} of ${files.length} — ${f.name}`);
-      const opt = await optimize(f);
-      const b64 = bufToB64(await readAsBuf(opt.blob));
-      const blob = await gh(`/repos/${OWNER}/${REPO}/git/blobs`, {
-        method:"POST", body:JSON.stringify({ content:b64, encoding:"base64" })
-      });
-      treeItems.push({ path:`${PHOTO_DIR}/${opt.name}`, mode:"100644", type:"blob", sha:blob.sha });
-      existing.add(opt.name);
-      prog((i+1)/files.length * 0.85);
+    let done = 0;
+    for(const [slug, info] of plan.entries()){
+      if(!meta[slug]) meta[slug] = { title: info.title, desc:"", cover:"", order:999 };
+      else if(!meta[slug].title) meta[slug].title = info.title;
+      for(const f of info.files){
+        log(`Optimizing & uploading ${done+1} of ${totalToUpload} — ${info.title} / ${f.name}`);
+        const opt = await optimize(f);
+        const rel = `${slug}/${opt.name}`;
+        const b64 = bufToB64(await readAsBuf(opt.blob));
+        const blob = await gh(`/repos/${OWNER}/${REPO}/git/blobs`, { method:"POST", body:JSON.stringify({ content:b64, encoding:"base64" }) });
+        treeItems.push({ path:`${PHOTO_DIR}/${rel}`, mode:"100644", type:"blob", sha:blob.sha });
+        existing.add(rel);
+        done++; prog(done/totalToUpload * 0.8);
+      }
     }
 
-    // rebuild photos.js from full set
-    log("Updating the gallery layout…");
-    const allNames = [...existing].sort(collator.compare);
-    const photos = allNames.map(n=>({ src:`${PHOTO_DIR}/${n.split("/").map(encodeURIComponent).join("/")}`, title:"" }));
-    const js = `// AUTO-GENERATED by upload.html — ${photos.length} photo(s).\nwindow.PHOTOS = ${JSON.stringify(photos,null,2)};\n`;
-    const jsBlob = await gh(`/repos/${OWNER}/${REPO}/git/blobs`, {
-      method:"POST", body:JSON.stringify({ content:js, encoding:"utf-8" })
-    });
-    treeItems.push({ path:"photos.js", mode:"100644", type:"blob", sha:jsBlob.sha });
+    log("Updating the site…");
+    const albums = buildAlbums([...existing], captions, meta);
+    const js = `// AUTO-GENERATED by upload.html — ${albums.length} album(s).\nwindow.ALBUMS = ${JSON.stringify(albums.map(({order,...a})=>a),null,2)};\n`;
+    const jsBlob = await gh(`/repos/${OWNER}/${REPO}/git/blobs`, { method:"POST", body:JSON.stringify({ content:js, encoding:"utf-8" }) });
+    treeItems.push({ path:"albums.js", mode:"100644", type:"blob", sha:jsBlob.sha });
+
+    const metaBlob = await gh(`/repos/${OWNER}/${REPO}/git/blobs`, { method:"POST", body:JSON.stringify({ content: JSON.stringify(meta,null,2)+"\n", encoding:"utf-8" }) });
+    treeItems.push({ path:"albums.json", mode:"100644", type:"blob", sha:metaBlob.sha });
     prog(0.9);
 
-    // new tree → commit → move branch
-    const newTree = await gh(`/repos/${OWNER}/${REPO}/git/trees`, {
-      method:"POST", body:JSON.stringify({ base_tree:baseTree, tree:treeItems })
-    });
-    const newCommit = await gh(`/repos/${OWNER}/${REPO}/git/commits`, {
-      method:"POST", body:JSON.stringify({ message:`Add ${files.length} photo(s) via upload page`, tree:newTree.sha, parents:[baseCommit] })
-    });
-    await gh(`/repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}`, {
-      method:"PATCH", body:JSON.stringify({ sha:newCommit.sha })
-    });
+    const albumWord = plan.size === 1 ? `the "${[...plan.values()][0].title}" album` : `${plan.size} albums`;
+    const newTree = await gh(`/repos/${OWNER}/${REPO}/git/trees`, { method:"POST", body:JSON.stringify({ base_tree:baseTree, tree:treeItems }) });
+    const newCommit = await gh(`/repos/${OWNER}/${REPO}/git/commits`, { method:"POST", body:JSON.stringify({ message:`Add ${totalToUpload} photo(s) to ${albumWord} via upload page`, tree:newTree.sha, parents:[baseCommit] }) });
+    await gh(`/repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}`, { method:"PATCH", body:JSON.stringify({ sha:newCommit.sha }) });
     prog(1);
 
-    log(`✓ Published ${files.length} photo(s)! ${photos.length} total in the gallery. It goes live in about a minute.`, "ok");
-    files = []; renderPicked();
+    const total = albums.reduce((n,a)=>n+a.photos.length,0);
+    log(`✓ Added ${totalToUpload} photo(s) to ${albumWord}! ${total} photo(s) across ${albums.length} album(s). Live in about a minute.`, "ok");
+    clearItems(); loadExisting();
   }catch(err){
     log("Something went wrong:\n" + err.message + "\n\nCheck that your key is correct and has Contents: Read & write on the performance-gallery repo.", "err");
   }finally{
-    $("publish").disabled = !(token && files.length);
+    refreshPublishBtn();
   }
 };
+
+paintTok();
 </script>
 </body>
 </html>
